@@ -1,0 +1,50 @@
+CREATE TABLE ALERTA (
+  Id_alerta INTEGER PRIMARY KEY,
+  Fecha_hora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  Tipo_alerta TEXT NOT NULL,
+  Nivel_riesgo TEXT NOT NULL,
+  Estado TEXT NOT NULL
+);
+
+CREATE TABLE FAMILIAR (
+  Id_Familiar INTEGER PRIMARY KEY,
+  Nombre VARCHAR (30) NOT NULL, 
+  Apellido1 VARCHAR (30) NOT NULL,
+  Apellido2 VARCHAR (30) NOT NULL, 
+  Cedula VARCHAR (10) NOT NULL,
+  Correo VARCHAR (100) NOT NULL, 
+  Telefono VARCHAR (20) NOT NULL,
+  Parentesco VARCHAR (50) NOT NULL,
+  Direccion VARCHAR (200) NOT NULL
+);
+
+CREATE TABLE HOGAR (
+  Id_Hogar INTEGER PRIMARY KEY,
+  Id_adultomayor INTEGER,
+  Direccion VARCHAR (200) NOT NULL,
+  Municipio VARCHAR (100) NOT NULL,
+  Tipo_vivienda VARCHAR (50) NOT NULL,
+  FOREIGN KEY (Id_adultomayor) REFERENCES ADULTOMAYOR(Id_adultomayor)
+);
+
+CREATE TABLE ADULTOMAYOR (
+  Id_adultomayor INTEGER PRIMARY KEY,
+  Id_Familiar INTEGER,
+  Nombre VARCHAR (30) NOT NULL, 
+  Apellido1 VARCHAR (30) NOT NULL,
+  Apellido2 VARCHAR (30) NOT NULL, 
+  Cedula VARCHAR (10) NOT NULL,
+  Edad INTEGER NOT NULL,
+  Telefono VARCHAR (20) NOT NULL,
+  Direccion VARCHAR (200) NOT NULL,
+  FOREIGN KEY(Id_Familiar) REFERENCES FAMILIAR(Id_Familiar)
+);
+
+CREATE TABLE DIAGNOSTICO_COGNITIVO (
+  Id_diagnostico INTEGER PRIMARY KEY,
+  Nombre_patologia VARCHAR (150),
+  Fase_etapa VARCHAR (50),
+  Fecha_diagnostico DATE
+);
+
+
