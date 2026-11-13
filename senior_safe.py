@@ -1,5 +1,5 @@
 import pandas as pd
-import psycopg
+import psycopg2
 import sklearn
 
 # Piezas del "cerebro artificial" de Scikit-learn
@@ -9,11 +9,11 @@ from sklearn.metrics import accuracy_score
 import joblib 
 
 # 1. Definir la conexión
-conexion = psycopg.connect(
+conexion = psycopg2.connect(
     host="localhost",
     dbname="seniorsafe",
     user="postgres",
-    password="12345",
+    password="1234",
     port="5432"
 )
 
@@ -27,8 +27,8 @@ SELECT
     dc.fase_etapa
 FROM alerta a
 JOIN hogar h ON a.hogar_id = h.hogar_id
-JOIN adultomayor am ON h.adultomayor_id = am.adultomayor_id
-JOIN padecer p ON am.adultomayor_id = p.adultomayor_id
+JOIN adulto_mayor am ON h.adulto_mayor_id = am.adulto_mayor_id
+JOIN padecer p ON am.adulto_mayor_id = p.adulto_mayor_id
 JOIN diagnostico_cognitivo dc ON p.diagnostico_id = dc.diagnostico_id
 """
 
