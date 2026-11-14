@@ -36,8 +36,46 @@ df = pd.read_sql(query, conexion)
 
 
 df['nivel_num'] = df['nivel_riesgo'].apply(lambda x: 1 if str(x).lower() in ['critico', 'alto'] else 0)
-df['fase_num'] = df['fase_etapa'].apply(lambda x: 10 if str(x).lower() in ['grave','moderada'] else 0)
+df['fase_num'] = df['fase_etapa'].apply(lambda x: 10 if str(x).lower() in ['avanzada','moderada'] else 0)
 total_alertas = len(df)
 conteo_riesgos = df['nivel_riesgo'].value_counts()
 porcentaje_riesgos = (conteo_riesgos / total_alertas) * 100
+
+print ("El porcentaje de riesgos es "), print (porcentaje_riesgos)
+print (df)
+
+
+X = df[['edad', 'fase_num']]  
+Y = df['nivel_num']  
+
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+
+modelo = DecisionTreeClassifier()
+modelo.fit(X_train, Y_train)  
+
+print("\n¡El modelo de Inteligencia Artificial de Senior Safe ha sido entrenado con éxito!")
+
+predicciones = modelo.predict(X_test)
+precision = accuracy_score(Y_test, predicciones)
+print(f"Precisión del modelo: {precision * 100}%")
+
+
+adulto_nuevo = pd.DataFrame({
+    'edad': [79],
+    'fase_num': [10]
+})
+
+prediccion_nuevo = modelo.predict(adulto_nuevo)
+
+if prediccion_nuevo[0] == 1:
+    print("\n🚨 Alerta: El modelo predice que este adulto tiene un nivel de riesgo CRITICO O ALTO.")
+else:
+    print("\n✅ El modelo predice que este adulto tiene un nivel de riesgo BAJO O NORMAL.")           
+
+
+joblib.dump(modelo, 'modelo_seniorsafe.pkl')
+print("📦 ¡Modelo exportado con éxito a 'modelo_seniorsafe.pkl'!")
+
+
+conexion.close()
 
