@@ -1,68 +1,61 @@
-
-
-CREATE TABLE Diagnostico_cognitivo (
-   Id_Diagnostico INT PRIMARY KEY,
-   nombre_patologia VARCHAR (50) NOT NULL,
-   Fase_etapa VARCHAR (60),
-   Fecha_diagnostico DATE
+CREATE TABLE diagnostico_cognitivo (
+   id_diagnostico INT PRIMARY KEY,
+   nombre_patologia VARCHAR(50) NOT NULL,
+   fase_etapa VARCHAR(60),
+   fecha_diagnostico DATE
 );
 
-CREATE TABLE Adulto_mayor (
-   Id_Adulto_mayor INT PRIMARY KEY,
+CREATE TABLE adulto_mayor (
+   id_adulto_mayor INT PRIMARY KEY,
    nombre VARCHAR(50) NOT NULL,
    apellidos VARCHAR(40) NOT NULL,
    cedula VARCHAR(70) NOT NULL,
    edad INT NOT NULL,
    telefono INT NOT NULL,
    direccion VARCHAR(60)
-   );
+);
 
+CREATE TABLE padecer (
+   id_adulto_mayor INT,
+   id_diagnostico INT,
+   FOREIGN KEY (id_adulto_mayor) REFERENCES adulto_mayor(id_adulto_mayor),
+   FOREIGN KEY (id_diagnostico) REFERENCES diagnostico_cognitivo(id_diagnostico)
+);
 
-  CREATE TABLE Padecer (
-    Id_Adulto_mayor int,
-    Id_Diagnostico int,
-    FOREIGN KEY (Id_Adulto_mayor)REFERENCES Adulto_mayor(Id_Adulto_mayor),
-    FOREIGN KEY (Id_Diagnostico)REFERENCES Diagnostico_cognitivo(Id_Diagnostico)
-   );
+CREATE TABLE familiar (
+   id_familiar INT PRIMARY KEY,
+   id_adulto_mayor INT,
+   nombre VARCHAR(20) NOT NULL,
+   apellidos VARCHAR(20) NOT NULL,
+   cedula VARCHAR(20) NOT NULL,
+   correo VARCHAR(40) NULL,
+   telefono INT NOT NULL,
+   parentesco VARCHAR(40) NOT NULL,
+   direccion VARCHAR(40) NOT NULL,
+   FOREIGN KEY (id_adulto_mayor) REFERENCES adulto_mayor(id_adulto_mayor)
+);
 
-
-  CREATE TABLE Familiar (
-    Id_familiar INT PRIMARY KEY,
-    Id_Adulto_mayor INT,
-	nombre VARCHAR(20) NOT NULL,
-    apellidos VARCHAR(20) NOT NULL,
-    cedula VARCHAR(20)NOT NULL,
-    correo VARCHAR(40)NOT NULL,
-    telefono INT NOT NULL,
-    parentesco VARCHAR(40)NOT NULL,
-    direccion VARCHAR(40)NOT NULL,
-    FOREIGN KEY (Id_Adulto_mayor)REFERENCES Adulto_mayor(Id_Adulto_mayor)
-    );
-
-
-CREATE TABLE Hogar (
-   Id_Hogar INT PRIMARY KEY,
-   Id_Adulto_mayor INT,
+CREATE TABLE hogar (
+   id_hogar INT PRIMARY KEY,
+   id_adulto_mayor INT,
    direccion VARCHAR(200) NOT NULL,
    municipio VARCHAR(20) NOT NULL,
-   tipo_vivienda  VARCHAR(50) NOT NULL,
-   FOREIGN KEY (Id_Adulto_mayor)REFERENCES Adulto_mayor(Id_Adulto_mayor)
-   );
-   
-CREATE TABLE Alerta (
-   Id_Alerta INT PRIMARY KEY,
-   Id_Hogar INT NOT NULL,
+   tipo_vivienda VARCHAR(50) NOT NULL,
+   FOREIGN KEY (id_adulto_mayor) REFERENCES adulto_mayor(id_adulto_mayor)
+);
+
+CREATE TABLE alerta (
+   id_alerta INT PRIMARY KEY,
+   id_hogar INT NOT NULL,
    fecha_hora DATE NOT NULL,
    tipo_alerta VARCHAR(40),
    nivel_riesgo VARCHAR(40) NOT NULL,
    estado VARCHAR(40) NOT NULL,
-   FOREIGN KEY (Id_Hogar)REFERENCES Hogar(Id_Hogar)
-   );
+   FOREIGN KEY (id_hogar) REFERENCES hogar(id_hogar)
+);
 
 
-SELECT * FROM adulto_mayor, alerta, diagnostico_cognitivo, familiar, hogar, padecer;
-
-INSERT INTO diagnostico_Cognitivo (Id_Diagnostico, nombre_patologia, Fase_etapa, Fecha_diagnostico) VALUES
+INSERT INTO diagnostico_cognitivo (id_diagnostico, nombre_patologia, fase_etapa, fecha_diagnostico) VALUES
     (1, 'Alzheimer', 'Inicial', '2026-02-10'),
     (2, 'Deterioro cognitivo leve', 'Leve', '2026-03-15'),
     (3, 'Demencia vascular', 'Moderada', '2026-02-20'),
@@ -74,7 +67,7 @@ INSERT INTO diagnostico_Cognitivo (Id_Diagnostico, nombre_patologia, Fase_etapa,
     (9, 'Demencia por cuerpos de Lewy', 'Inicial', '2026-03-20'),
     (10, 'Deterioro cognitivo leve', 'Leve', '2026-03-25');
 
-INSERT INTO Adulto_mayor (Id_Adulto_mayor, nombre, apellidos, cedula, edad, telefono, direccion) VALUES
+INSERT INTO adulto_mayor (id_adulto_mayor, nombre, apellidos, cedula, edad, telefono, direccion) VALUES
     (1, 'Ana', 'Perez', '1001', 75, '300123456', 'Calle 10'),
     (2, 'Carlos', 'Gomez', '1002', 80, '300123457', 'Calle 20'),
     (3, 'Rosa', 'Martínez', '1003', 72, '300123458', 'Calle 30'),
@@ -86,24 +79,7 @@ INSERT INTO Adulto_mayor (Id_Adulto_mayor, nombre, apellidos, cedula, edad, tele
     (9, 'Sofía', 'Castro', '1009', 76, '300123464', 'Calle 90'),
     (10, 'David', 'Morales', '1010', 81, '300123465', 'Calle 100');
 
- CREATE TABLE Familiar (
-    Id_familiar INT PRIMARY KEY,
-    Id_Adulto_mayor INT,
-	nombre VARCHAR(20) NOT NULL,
-    apellidos VARCHAR(20) NOT NULL,
-    cedula VARCHAR(20)NOT NULL,
-    correo VARCHAR(40) NULL,
-    telefono INT NOT NULL,
-    parentesco VARCHAR(40)NOT NULL,
-    direccion VARCHAR(40)NOT NULL,
-    FOREIGN KEY (Id_Adulto_mayor)REFERENCES Adulto_mayor(Id_Adulto_mayor)
-    );
-
-ALTER TABLE Familiar
-ALTER COLUMN correo DROP NOT NULL;
-
-
-INSERT INTO Familiar (Id_familiar, nombre, apellidos, cedula, correo, telefono, parentesco, direccion, Id_Adulto_mayor) VALUES
+INSERT INTO familiar (id_familiar, nombre, apellidos, cedula, correo, telefono, parentesco, direccion, id_adulto_mayor) VALUES
     (101, 'Maria', 'Perez', '2001', 'maria@example.com', '310123456', 'Hija', 'Calle 10', 1),
     (102, 'Luis', 'Gomez', '2002', 'luis@example.com', '310123457', 'Hijo', 'Calle 20', 2),
     (103, 'Carmen', 'Martínez', '2003', NULL, '310123458', 'Sobrina', 'Calle 30', 3),
@@ -115,7 +91,7 @@ INSERT INTO Familiar (Id_familiar, nombre, apellidos, cedula, correo, telefono, 
     (109, 'Diana', 'Castro', '2009', NULL, '310123464', 'Hija', 'Calle 90', 9),
     (110, 'Mateo', 'Morales', '2010', 'mateo@example.com', '310123465', 'Nieto', 'Calle 100', 10);
 
-INSERT INTO Hogar (Id_Hogar, direccion, municipio, tipo_vivienda, Id_Adulto_Mayor) VALUES
+INSERT INTO hogar (id_hogar, direccion, municipio, tipo_vivienda, id_adulto_mayor) VALUES
     (1, 'Calle 10', 'Soacha', 'Casa', 1),
     (2, 'Calle 20', 'Bogota', 'Apartamento', 2),
     (3, 'Calle 30', 'Soacha', 'Casa', 3),
@@ -127,8 +103,7 @@ INSERT INTO Hogar (Id_Hogar, direccion, municipio, tipo_vivienda, Id_Adulto_Mayo
     (9, 'Calle 90', 'Bogota', 'Casa', 9),
     (10, 'Calle 100', 'Soacha', 'Apartamento', 10);
 
-
-INSERT INTO Alerta (Id_alerta, Fecha_hora, Tipo_alerta, Nivel_riesgo, Estado, Id_hogar) VALUES
+INSERT INTO alerta (id_alerta, fecha_hora, tipo_alerta, nivel_riesgo, estado, id_hogar) VALUES
     (1, '2026-02-15 09:30:00', 'Caida', 'Alto', 'Pendiente', 1),
     (2, '2026-02-25 14:15:00', 'Desorientación', 'Medio', 'Resuelto', 2),
     (3, '2026-03-05 18:00:00', 'Emergencia médica', 'Alto', 'Pendiente', 3),
@@ -140,25 +115,21 @@ INSERT INTO Alerta (Id_alerta, Fecha_hora, Tipo_alerta, Nivel_riesgo, Estado, Id
     (9, '2026-03-25 12:00:00', 'Caida', 'Alto', 'Pendiente', 9),
     (10, '2026-03-28 15:00:00', 'Desorientación', 'Medio', 'Resuelto', 10);
 
-
-INSERT INTO Padecer
-(Id_Adulto_mayor, Id_diagnostico)
-VALUES
-(1, 3),
-(2, 1),
-(3, 5),
-(4, 2),
-(5, 8),
-(6, 7),
-(7, 3),
-(8, 6),
-(9, 9),
-(10, 4);
+INSERT INTO padecer (id_adulto_mayor, id_diagnostico) VALUES
+    (1, 3),
+    (2, 1),
+    (3, 5),
+    (4, 2),
+    (5, 8),
+    (6, 7),
+    (7, 3),
+    (8, 6),
+    (9, 9),
+    (10, 4);
 
 
 SELECT * FROM adulto_mayor, alerta, diagnostico_cognitivo, familiar, hogar;
 
-TRUNCATE TABLE Padecer;
 
 SELECT * FROM adulto_mayor;
 
@@ -188,6 +159,3 @@ INNER JOIN Diagnostico_cognitivo ON Diagnostico_Cognitivo.Id_Diagnostico = Padec
 
 
 SELECT * FROM adulto_mayor, diagnostico_cognitivo;
-
-
-
