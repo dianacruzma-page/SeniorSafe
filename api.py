@@ -19,7 +19,9 @@ def root():
 @app.post("/evaluar_riesgo")
 def evaluar_riesgo (datos: adulto_mayor):
     
-    df_ia = pd.DataFrame ({"edad" : [datos.edad], "fase_num" : [datos.fase_num]})
+    fase_num = 10 if datos.fase_etapa.lower() in ["avanzada","moderada"] else 0
+    
+    df_ia = pd.DataFrame ({"edad" : [datos.edad], "fase_num" : [fase_num]})
 
     prediccion = modelo_ia.predict (df_ia)
     if prediccion [0] == 1: 
